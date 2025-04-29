@@ -49,7 +49,11 @@ if(NOT BUILD_LIBTORCHLESS)
   endif()
 
   # ---[ Dependency of c10_hip
-  target_link_libraries(c10_hip PUBLIC ${C10_LIB} hip::amdhip64)
+  if(NOT WIN32)
+    target_link_libraries(c10_hip PUBLIC ${C10_LIB} hip::amdhip64 hsa-runtime64::hsa-runtime64)
+  else()
+    target_link_libraries(c10_hip PUBLIC ${C10_LIB} hip::amdhip64)
+  endif()
 
   target_include_directories(
       c10_hip PUBLIC
