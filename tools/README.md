@@ -37,12 +37,15 @@ Developer tools which you might find useful:
 
 Important if you want to run on AMD GPU:
 
-* [amd_build](amd_build) - HIPify scripts, for transpiling CUDA
+* [amd_build](amd_build) - AMD scripts like HIPify, for transpiling CUDA
   into AMD HIP.  Right now, PyTorch and Caffe2 share logic for how to
   do this transpilation, but have separate entry-points for transpiling
   either PyTorch or Caffe2 code.
   * [build_amd.py](amd_build/build_amd.py) - Top-level entry
     point for HIPifying our codebase.
+  * [write_rocm_init.py](amd_build/write_rocm_init.py) - Utility to write the
+    `torch/_rocm_init.py` bootstrap module used by
+    [`torch/__init__.py`](/torch/__init__.py)
 
 Tools which are only situationally useful:
 

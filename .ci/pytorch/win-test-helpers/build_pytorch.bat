@@ -4,7 +4,13 @@ if "%DEBUG%" == "1" (
   set BUILD_TYPE=release
 )
 
-set PATH=C:\Program Files\CMake\bin;C:\Program Files\7-Zip;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files\Amazon\AWSCLI;C:\Program Files\Amazon\AWSCLI\bin;%PATH%
+@REM DO NOT SUBMIT
+@REM   keep the Windows AMI (Amazon Machine Image) code?
+@REM   what if this runs on local developer machines or Azure VMs?
+@REM   hardcoded paths are tough to support outside of CI
+@REM   maybe ROCm Windows CI should fork this script?
+
+@REM set PATH=C:\Program Files\CMake\bin;C:\Program Files\7-Zip;C:\ProgramData\chocolatey\bin;C:\Program Files\Git\cmd;C:\Program Files\Amazon\AWSCLI;C:\Program Files\Amazon\AWSCLI\bin;%PATH%
 
 :: This inflates our log size slightly, but it is REALLY useful to be
 :: able to see what our cl.exe commands are (since you can actually
@@ -20,9 +26,9 @@ call %INSTALLER_DIR%\install_magma.bat
 if errorlevel 1 goto fail
 if not errorlevel 0 goto fail
 
-call %INSTALLER_DIR%\install_sccache.bat
-if errorlevel 1 goto fail
-if not errorlevel 0 goto fail
+@REM call %INSTALLER_DIR%\install_sccache.bat
+@REM if errorlevel 1 goto fail
+@REM if not errorlevel 0 goto fail
 
 if "%USE_XPU%"=="1" (
   :: Install xpu support packages
@@ -31,30 +37,30 @@ if "%USE_XPU%"=="1" (
   if errorlevel 1 exit /b 1
 )
 
-:: Miniconda has been installed as part of the Windows AMI with all the dependencies.
-:: We just need to activate it here
-call %INSTALLER_DIR%\activate_miniconda3.bat
-if errorlevel 1 goto fail
-if not errorlevel 0 goto fail
+@REM :: Miniconda has been installed as part of the Windows AMI with all the dependencies.
+@REM :: We just need to activate it here
+@REM call %INSTALLER_DIR%\activate_miniconda3.bat
+@REM if errorlevel 1 goto fail
+@REM if not errorlevel 0 goto fail
 
 :: Update CMake
-call choco upgrade -y cmake --no-progress --installargs 'ADD_CMAKE_TO_PATH=System' --apply-install-arguments-to-dependencies --version=3.27.9
-if errorlevel 1 goto fail
-if not errorlevel 0 goto fail
+@REM call choco upgrade -y cmake --no-progress --installargs 'ADD_CMAKE_TO_PATH=System' --apply-install-arguments-to-dependencies --version=3.27.9
+@REM if errorlevel 1 goto fail
+@REM if not errorlevel 0 goto fail
 
 call pip install mkl==2024.2.0 mkl-static==2024.2.0 mkl-include==2024.2.0
 if errorlevel 1 goto fail
 if not errorlevel 0 goto fail
 
 :: Override VS env here
-pushd .
-if "%VC_VERSION%" == "" (
-    call "C:\Program Files (x86)\Microsoft Visual Studio\%VC_YEAR%\%VC_PRODUCT%\VC\Auxiliary\Build\vcvarsall.bat" x64
-) else (
-    call "C:\Program Files (x86)\Microsoft Visual Studio\%VC_YEAR%\%VC_PRODUCT%\VC\Auxiliary\Build\vcvarsall.bat" x64 -vcvars_ver=%VC_VERSION%
-)
-if errorlevel 1 goto fail
-if not errorlevel 0 goto fail
+@REM pushd .
+@REM if "%VC_VERSION%" == "" (
+@REM     call "C:\Program Files (x86)\Microsoft Visual Studio\%VC_YEAR%\%VC_PRODUCT%\VC\Auxiliary\Build\vcvarsall.bat" x64
+@REM ) else (
+@REM     call "C:\Program Files (x86)\Microsoft Visual Studio\%VC_YEAR%\%VC_PRODUCT%\VC\Auxiliary\Build\vcvarsall.bat" x64 -vcvars_ver=%VC_VERSION%
+@REM )
+@REM if errorlevel 1 goto fail
+@REM if not errorlevel 0 goto fail
 
 if "%USE_XPU%"=="1" (
   :: Activate xpu environment - VS env is required for xpu
@@ -94,7 +100,7 @@ set PATH=%CUDA_PATH%\bin;%CUDA_PATH%\libnvvp;%PATH%
 :cuda_build_end
 
 set DISTUTILS_USE_SDK=1
-set PATH=%TMP_DIR_WIN%\bin;C:\Program Files\CMake\bin;%PATH%
+@REM set PATH=%TMP_DIR_WIN%\bin;C:\Program Files\CMake\bin;%PATH%
 
 :: The latest Windows CUDA test is running on AWS G5 runner with A10G GPU
 if "%TORCH_CUDA_ARCH_LIST%" == "" set TORCH_CUDA_ARCH_LIST=8.6
