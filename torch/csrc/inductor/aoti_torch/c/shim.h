@@ -548,7 +548,7 @@ AOTI_TORCH_EXPORT AOTITorchError aoti_torch_get_current_stream(
 AOTI_TORCH_EXPORT AOTITorchError
 aoti_torch_get_current_device_index(int32_t* ret_device_index);
 
-#ifdef USE_CUDA
+#ifdef USE_ROCM
 
 struct CUDAGuardOpaque;
 using CUDAGuardHandle = CUDAGuardOpaque*;
@@ -579,7 +579,7 @@ aoti_torch_delete_cuda_stream_guard(CUDAStreamGuardHandle guard);
 AOTI_TORCH_EXPORT AOTITorchError
 aoti_torch_get_current_cuda_stream(int32_t device_index, void** ret_stream);
 
-#endif // USE_CUDA
+#endif // USE_ROCM
 
 // See `ProxyExecutor Design Note` in ir.py for more details
 AOTI_TORCH_EXPORT AOTITorchError aoti_torch_proxy_executor_call_function(
